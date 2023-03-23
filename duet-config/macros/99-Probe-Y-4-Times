@@ -1,9 +1,0 @@
-G90 
-G1 Z5 F200
-;G1 X417.5 Y197.5 F3200
-G1 Z5 F1250
-G30 P0 X{sensors.probes[0].offsets[0]} Y{sensors.probes[0].offsets[1]} Z-99999
-G30 P1 X{sensors.probes[0].offsets[0]} Y{move.axes[1].max-sensors.probes[0].offsets[1]} Z-99999 S-1
-;G30 P2 X840 Y410 Z-99999
-;G30 P3 X840 Y12 Z-99999 S-1
-G1 Z20
