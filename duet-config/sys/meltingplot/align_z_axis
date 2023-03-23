@@ -1,0 +1,18 @@
+M98 P"0:/sys/meltingplot/check_doors_closed"
+
+G91                                        ; relative position
+M400                                       ; make sure everything has stopped before we reset the motor currents
+G1 H2 Z0.5 F600                            ; lower speed friction move
+M400                                       ; wait for moves to finish
+M913 Z30                                   ; set motor current to 30%
+G1 H1 Z{(move.axes[2].max+5)} F1250        ; lower z axis
+M400                                       ; wait for moves to finish
+M913 Z35                                   ; set motor current to 35%
+G1 Z-2.5 F960                              ; lift z axis again
+M400                                       ; wait for moves to finish
+M913 Z30                                   ; set motor current to 30%
+G1 H1 Z{(move.axes[2].max+5)} F1250        ; lower z axis
+M400                                       ; make sure everything has stopped before we reset the motor currents
+M913 X100 Y100 Z100                        ; motor currents back to normal
+G1 Z-2.5 F960                              ; lift z axis again
+G90                                        ; absolute position

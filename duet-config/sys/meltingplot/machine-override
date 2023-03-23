@@ -1,0 +1,7 @@
+; Put Machine specific overried in this file, e.g. rotation direction of specific stepper motor
+; this files is loaded from config.g
+
+; enable, if your printer is equippted with an rotary filament monitor
+;M591 P3 C"e1stop" S1 D0 E15 R40:180; filament monitor connected to E1 endstop
+
+M309 P0 S0.05 ; heater feedforward compensation

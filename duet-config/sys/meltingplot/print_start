@@ -1,0 +1,19 @@
+M107                                        ; fan off
+M144 P0 S1                                  ; activate bed 1 heater
+T0                                          ; select tool 0
+M98 P"0:/sys/meltingplot/home_if_necessary" ; check homing
+G29 S1                                      ; load stored hight map
+
+; currently volumetric extrusion is somehow broken in RRF
+;M200 D[filament_diameter_0] T0 ; set filament diameter for volumetric E
+
+M83                                         ; use relative distances for extrusion
+G90                                         ; use absolute coordinates
+
+M116                                        ; wait for all heaters
+
+G1 Z20                                      ; raise z=20mm
+G1 X{105-sensors.probes[0].offsets[0]} Y{move.kinematics.tiltCorrection.screwY[0]-sensors.probes[0].offsets[1]} F14400
+G1 Z5 G30                                   ; after z compensation probe z-distance again
+
+M98 P"0:/sys/meltingplot/prime_nozzle_0"    ; prime nozzle

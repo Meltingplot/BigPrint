@@ -1,0 +1,13 @@
+G10                                 ; Retract the filament
+
+G10 P0 R0 S0                        ; disable hotend
+M140 S0 R0                          ; set bed heater to 0°
+M140 P0 S-273.1                     ; disable bed heater
+T-1                                 ; deselect all tools
+
+G28 X Y                             ; home x and y
+G1 Z{move.axes[2].max} F1250        ; lift z
+G1 X{move.axes[0].max}              ; move gantry away from camera
+
+;M84                                ; turn off motors
+M107                                ; Turn off fans

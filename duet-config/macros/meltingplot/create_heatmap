@@ -1,0 +1,22 @@
+M98 P"0:/sys/meltingplot/check_doors_closed"    ; check that both doors are closed
+M140 P0 S87.5                                   ; set bed temp
+T0 P0                                           ; activate T0 without toolchange macro
+G10 P0 R100 S120                                ; set nozzle temp
+M566 P0                                         ; disable jerk
+M561                                            ; clear any bed transform
+G29 S2                                          ; Clear height compensation
+M290 R0 S0                                      ; clear babystepping
+M203 Z600.00                                    ; reduce z speed
+M201 Z48.00                                     ; reduce acceleration
+
+if (heat.heaters[1].current < (heat.heaters[1].active-5.0)) || (heat.heaters[0].current < (heat.heaters[0].active-5.0))
+  M291 P"Waiting for Heaters. This Message may disappear but the printer is still heating up, be patient."
+  M116                                          ; wait for all heaters
+
+G29                                             ; create height map
+M566 P1                                         ; enable jerk
+M203 Z1250.00                                   ; revert z speed
+M201 Z72.00                                     ; revert acceleration
+
+M140 P0 S0                                      ; disable bed heater
+T-1                                             ; disable tool

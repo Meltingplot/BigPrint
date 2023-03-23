@@ -1,0 +1,32 @@
+M98 P"0:/sys/meltingplot/check_doors_closed"                    ; check that both doors are closed
+G90                                                             ; absolute position
+M291 P"You <b>must</b> finish this procedure, if for any reason the procedure is <i>interrupted</i>, <b>the printer state is undefined and you have to follow the initial calibration!</b>" S3
+M291 P"Setting hotend to 100°C and heated bed to 87.5°C! Caution you can get burned!" S2
+M140 P0 S87.5                                                   ; set bed temp
+T0 P0                                                           ; activate T0 without toolchange macro
+G10 P0 R100 S120                                                ; set nozzle temp
+M291 P"Any Machine compensations and boundaries will be disabled! Warning: <b>You can move the Printhead into the Printbed!</b>" S2
+M291 P"Make sure, that the printbed is free! The printhead will be moved to the left probe point." S2 
+G1 X{105-sensors.probes[0].offsets[0]} Y{move.kinematics.tiltCorrection.screwY[0]-sensors.probes[0].offsets[1]} F5000
+M561                                                            ; clear any bed transform
+G29 S2                                                          ; Clear height compensation
+M290 R0 S0                                                      ; clear babystepping
+M564 S0                                                         ; disable boundaries
+
+if (heat.heaters[1].current < (heat.heaters[1].active-5.0)) || (heat.heaters[0].current < (heat.heaters[0].active-5.0))
+  M291 P"Waiting for Heaters. This Message may disappear but the macro is still executed! Be patient." T30 ; display message to user
+  M116                                                          ; wait for all heaters
+
+M291 P"Place the calibration card between the nozzle and the printbed" S2
+M291 P"Jog Z to Zero. Z- will decrease the distance between the nozzle and the printbed" R"Z-Zero" S3 Z1 ; ask operator to jog to z=0
+G92 Z0                                                          ; set Z = 0
+G1 Z5 F300                                                      ; move Z 5mm away
+M291 P"Remove the calibration card from the printbed" S2
+G30 X{move.axes[0].max/2} Y{move.axes[1].max/2} S-3             ; Set new trigger height
+M500 P31                                                        ; Store new trigger height
+M291 P"The Printbed will now set its new limits by driving from Z=0 to Z=MAX!" S2
+G1 Z0 F300                                                      ; drive to Zero
+M98 P"0:/sys/meltingplot/set_new_z_height"                      ; set new z height
+M564 S1                                                         ; enable boundaries
+M291 P"Procedure completed! The printer will now restart" S2
+M999                                                            ; Restart the Printer

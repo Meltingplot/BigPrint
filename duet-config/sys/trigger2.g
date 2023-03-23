@@ -1,4 +1,3 @@
-M913 X0 Y0 Z0 E0 ; set motor currents to 0 percent
-M112 M999 ; emergency shutdown
-
-
+; THIS FILE CONTAINS CE RELEVANT CONFIGURATIONS, ANY CHANGES TO THIS FILE MAY RESULT IN A LOST OF THE CE DECLARATION
+;M42 P3 S0   ; disable 230V relais (Bed Heater)
+M112 M999   ; emergency shutdown
