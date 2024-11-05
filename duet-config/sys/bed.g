@@ -5,7 +5,11 @@
 M561                                      ; clear any bed transform
 G29 S2                                    ; Clear height compensation
 M290 R0 S0                                ; clear babystepping
-M98 P"0:/sys/meltingplot/align_z_axis"    ; align z axis
+if global.bed_aligned == false
+  M98 P"0:/sys/meltingplot/align_z_axis"  ; align z axis
+elif move.axes[2].homed == false          ; check if z is homed
+  G1 X{105-sensors.probes[0].offsets[0]} Y{move.kinematics.tiltCorrection.screwY[0]-sensors.probes[0].offsets[1]} F14400
+  G30                                                       ; after z compensation probe z-distance again
 if move.axes[0].homed == false            ; check if x is homed
   M98 P"0:/sys/homex.g"                   ; home x axis
 if move.axes[1].homed == false            ; check if y is homed

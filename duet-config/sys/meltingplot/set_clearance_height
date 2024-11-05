@@ -1,0 +1,10 @@
+if !exists(global.clearanceHeight)
+  global clearanceHeight=5
+
+if exists(param.S)
+  set global.clearanceHeight={param.S}
+else
+  set global.clearanceHeight=5
+
+if global.clearanceHeight > 400
+  M291 P"Caution! The printed object may stick out of the printer, make sure there is enough space above the printer!" R"Large clearance height" S2

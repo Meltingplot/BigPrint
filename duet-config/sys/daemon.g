@@ -1,4 +1,3 @@
-
 while true
   ; use it to check the e-stop and door switch conditions
   ; check every channel individual
@@ -20,22 +19,22 @@ while true
     ; Bed has moved more than 6mm while door is opened 
     M112 ; emergency stop
 
+  var upTime = state.upTime
+
   if state.status == "paused"
-    if mod(state.upTime,20) >= 10
-      M42 P0 S{1.0-((mod(state.upTime,20)-10)/10.0)}
+    if mod(var.upTime,20) >= 10
+      M42 P0 S{1.0-((mod(var.upTime,20)-10)/10.0)}
     else
-      M42 P0 S{max(0.1, mod(state.upTime,10)/10.0)}
+      M42 P0 S{max(0.1, mod(var.upTime,10)/10.0)}
   elif state.status == "idle"
     M42 P0 S0.3
-    ; elif (state.status == "processing" || state.status == "pausing" || state.status == "resuming" || state.status == "starting")
-    ;   M42 P0 S1.0 ; turn LED on 100%
   else
     M42 P0 S1.0 ; turn LED on 100%
 
-  ; this file is called every 1 second in RFF 3.1.0 < 3.3
-  ; from 3.3 on this file is called every 10 seconds
-  ; to compensate this, loop 8 times and wait 1 second
-  ; and then leave this loop/file
-  if iterations > 8
+  if exists(global.mfmbackoff) && exists(global.lastMFMBackoffCheck) && global.mfmbackoff < 3 && ((global.lastMFMBackoffCheck + 60) < var.upTime)
+    set global.mfmbackoff = global.mfmbackoff + 1
+    set global.lastMFMBackoffCheck = var.upTime
+
+  G4 P100 ; wait 100ms
+  if iterations > 598 ; around 60 seconds break and restart the loop 
     break
-  G4 S1 ; wait one second
