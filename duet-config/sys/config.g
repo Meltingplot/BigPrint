@@ -101,7 +101,7 @@ G10 P0 X0 Y0 Z0                                         ; set tool 0 axis offset
 G10 P0 R0 S0                                            ; set initial tool 0 active and standby temperatures to 0C
 
 ; Z-Probe
-M558 P1 C"io1.in" H6 F240 T14400 A3                     ; set Z probe type to unmodulated and the dive height + speeds probe every point three times
+M558 P8 C"io1.in" H6 F240 T14400 A3                     ; set Z probe type to unmodulated and the dive height + speeds probe every point three times
 G31 P500 X8.6 Y25.5 Z2.0 T0.00118 S87.5 H0              ; set Z probe trigger value, offset and trigger height, try to set it to whole number of x/8mm pitch/200 steps-rev / 16 micro-step 
 M557 X{sensors.probes[0].offsets[0],move.axes[0].max-sensors.probes[0].offsets[0]} Y{sensors.probes[0].offsets[1],move.axes[1].max-sensors.probes[0].offsets[1]} P18:8                        ; define mesh grid
 M376 H15                                                ; taper out z correction over 15mm height
