@@ -4,7 +4,6 @@
 ; General preferences
 G90                                                     ; send absolute coordinates...
 M83                                                     ; ...but relative extruder moves
-M550 P"Meltingplot-MBL-480-xxxxxx"                      ; set printer name - replace xxxxxx with your electrical cabinet number
 
 M669 K1 S2 T1                                           ; select CoreXY mode and enable segmentation
 
@@ -22,15 +21,26 @@ M569 P5 S1                                              ; physical drive 5 goes 
 
 G4 S5                                                   ; wait for expansion boards
 
+;          Y 51.0 +------------------------------------+
+;                /                                    /|
+;               /                                    / |
+;              /                                    /  |
+;      X 50.0 +------------------------------------+   |
+;             |                                    |   |
+;             |                                    |  /
+;             |               front                | /
+;             |                                    |/
+;             +------------------------------------+
+
 ; Configure the Duet 3 Expansion 1HCL board at CAN address 50 with a Duet 3 magnetic encoder, warn if 2 fullstep threshold exceeded, error if 4 full steps threshold exceeded.
 M569.1 P50.0 T3 E2.0:4.0 S200 R210 I1500 D0.04 V600 A300000 H0.3
-M569 P50.0 D4 S1 ; Configure the motor on the Duet 3 Expansion 1HCL controller at can address 50 as being in closed-loop drive mode (D4) and not reversed (S1)
+M569 P50.0 D4 S0 ; Configure the motor on the Duet 3 Expansion 1HCL controller at can address 50 as being in closed-loop drive mode (D4) and reversed (S0)
 
 ; Configure the Duet 3 Expansion 1HCL board at CAN address 51 with a Duet 3 magnetic encoder, warn if 2 fullstep threshold exceeded, error if 4 full steps threshold exceeded.
 M569.1 P51.0 T3 E2.0:4.0 S200 R210 I1500 D0.04 V600 A250000 H0.3
-M569 P51.0 D4 S0 ; Configure the motor on the Duet 3 Expansion 1HCL controller at can address 51 as being in closed-loop drive mode (D4) and reversed (S0)
+M569 P51.0 D4 S1 ; Configure the motor on the Duet 3 Expansion 1HCL controller at can address 51 as being in closed-loop drive mode (D4) reversed (S1)
 
-M584 X51.0 Y50.0 Z2:3:4 E5                              ; set drive mapping
+M584 X50.0 Y51.0 Z2:3:4 E5                              ; set drive mapping
 
 M350 E16 I1                                             ; configure microstepping with interpolation
 M350 Z16 I1                                             ; configure microstepping with interpolation
