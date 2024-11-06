@@ -74,7 +74,7 @@ M42 P0 S0.25                                            ; Set LEDs to 25%
 ; M80 enable ATX power
 ; M81 disable ATX power
 ; our PSU uses an inverted PS_ON logic
-M80 C"!pson" ; inverts the PS_ON output
+;M80 C"!pson" ; inverts the PS_ON output
 
 ; Heaters
 M950 H0 C"nil"
