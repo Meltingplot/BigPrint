@@ -9,6 +9,7 @@ if move.axes[2].homed
     G91                                                             ; relative positioning
     G1 H2 Z0.5 F600                                                 ; lift Z relative to current position
 
+G92 X0                                                              ; set current position to X=0 to ensure that the X carriage is not moving in closed loop mode
 G91                                                                 ; relative positioning
 G1 H1 X{(move.axes[0].max+10)*-1} F1800                             ; move quickly to X axis endstop and stop there (first pass)
 G1 H2 X5 Y5 F6000                                                   ; go back a few mm

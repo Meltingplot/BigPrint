@@ -11,6 +11,7 @@ if move.axes[2].homed
     G91                                                             ; relative positioning
     G1 H2 Z0.5 F600                                                 ; lift Z relative to current position
 
+G92 X0 Y0                                                           ; set current position to X=0 Y=0 to ensure that the print head carriage is not moving in closed loop mode
 G91                                                                 ; relative positioning
 G1 H1 X{(move.axes[0].max+10)*-1} Y{move.axes[1].max+10} F3200      ; drive XY until endstop hit
 G1 H1 X{(move.axes[0].max)*-1}                                      ; home Y axis
