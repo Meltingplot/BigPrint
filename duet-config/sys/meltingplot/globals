@@ -1,0 +1,2 @@
+global bed_aligned = false
+global bed_aligned_since = 0

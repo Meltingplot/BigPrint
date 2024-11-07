@@ -17,4 +17,5 @@ M913 X100 Y100 Z100                        ; motor currents back to normal
 G1 Z-2.5 F960                              ; lift z axis again
 G90                                        ; absolute position
 
+set global.bed_aligned_since = state.upTime
 set global.bed_aligned = true

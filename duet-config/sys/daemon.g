@@ -35,6 +35,15 @@ while true
     set global.mfmbackoff = global.mfmbackoff + 1
     set global.lastMFMBackoffCheck = var.upTime
 
+  if exists(global.bed_aligned)
+    var z_homed = move.axes[2].homed
+    var bed_aligned = global.bed_aligned
+    if var.bed_aligned == true && var.z_homed == true:
+      set global.bed_aligned_since = var.upTime
+    elif var.bed_aligned == true && var.z_homed == false:
+      if (var.upTime - global.bed_aligned_since) > 30
+        set global.bed_aligned = false
+
   G4 P100 ; wait 100ms
   if iterations > 598 ; around 60 seconds break and restart the loop 
     break

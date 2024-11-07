@@ -138,4 +138,4 @@ M929 P"0:/eventlog.log" S1                              ; Enable Event Logging
 M98 P"0:/sys/meltingplot/machine-override"              ; Load Machine specific overrides
 M98 P"0:/sys/meltingplot/ce-declaration"                ; Load CE Requirements
 
-global bed_aligned = false
+M98 P"0:/sys/meltingplot/globals"                       ; Load Global Variables
