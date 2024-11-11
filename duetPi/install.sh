@@ -78,7 +78,7 @@ sudo sed -i 's|"Url": "http://\*"|"Url": "http://*:8080"|' /opt/dsf/conf/http.js
 sudo systemctl restart duetwebserver
 
 wget https://github.com/Meltingplot/BigPrint/archive/refs/heads/duet-3.5.3-sbc.zip
-unzip BigPrint-duet-3.5.3-sbc.zip
+unzip duet-3.5.3-sbc.zip
 mv BigPrint-duet-3.5.3-sbc/duet-config/filaments/* /opt/dsf/sd/filaments/
 mv BigPrint-duet-3.5.3-sbc/duet-config/macros/* /opt/dsf/sd/macros/
 mv BigPrint-duet-3.5.3-sbc/duet-config/sys/* /opt/dsf/sd/sys/
@@ -86,7 +86,7 @@ mv BigPrint-duet-3.5.3-sbc/duet-config/sys/* /opt/dsf/sd/sys/
 # Change ownership to the dsf user
 sudo chown -R dsf:dsf /opt/dsf/sd/
 
-rm -rf BigPrint-duet-3.5.3-sbc.zip BigPrint-duet-3.5.3-sbc
+rm -rf duet-3.5.3-sbc.zip BigPrint-duet-3.5.3-sbc
 
 sudo nmcli connection modify Hotspot connection.autoconnect yes
 nmcli connection modify Hotspot ipv4.method shared
