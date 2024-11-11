@@ -70,8 +70,9 @@ server {
 } 
 EOF
 
+sudo rm /etc/nginx/sites-enabled/reverse-proxy || true
+sudo rm /etc/nginx/sites-enabled/default || true
 sudo ln -s /etc/nginx/sites-available/reverse-proxy /etc/nginx/sites-enabled/reverse-proxy
-sudo rm /etc/nginx/sites-enabled/default
 sudo systemctl restart nginx
 
 # replace "Url": "http://*" in http.json with "Url": "http://*:8080"
@@ -90,4 +91,4 @@ sudo chown -R dsf:dsf /opt/dsf/sd/
 rm -rf duet-3.5.3-sbc.zip BigPrint-duet-3.5.3-sbc
 
 sudo nmcli connection modify Hotspot connection.autoconnect yes
-nmcli connection modify Hotspot ipv4.method shared
+sudo nmcli connection modify Hotspot ipv4.method shared
