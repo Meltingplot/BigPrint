@@ -2,6 +2,11 @@
 
 This repository contains configuration files for the Meltingplot MBL Series 3D Printer. These files are intended to be used with the Duet 3D printer controller and include settings for various filaments, firmware, macros, and system configurations.
 
+## Install
+
+To install these configuration files on a Duet 3D printer controller, follow these steps:
+curl -s https://raw.githubusercontent.com/Meltingplot/BigPrint/refs/heads/duet-3.5.3-sbc/duetPi/install.sh | bash
+
 ## Repository Structure
 
 ### Filaments
