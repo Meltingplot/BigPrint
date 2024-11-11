@@ -2,7 +2,8 @@
 set -e
 
 # Install the required packages
-sudo apt update && apt upgrade -y
+sudo apt update
+sudo apt upgrade -y
 sudo apt install -y nginx git wget unzip
 
 sudo bash -c 'cat > /etc/nginx/sites-available/reverse-proxy' <<"EOF"
