@@ -32,6 +32,7 @@ while true
     M42 P0 S1.0 ; turn LED on 100%
 
   if exists(global.mfmbackoff) && exists(global.lastMFMBackoffCheck) && global.mfmbackoff < 3 && ((global.lastMFMBackoffCheck + 60) < var.upTime)
+    M220 S{50+25*global.mfmbackoff} ; increase speed in steps of 50 + 0*25, 1*25 2*25
     set global.mfmbackoff = global.mfmbackoff + 1
     set global.lastMFMBackoffCheck = var.upTime
 
@@ -43,6 +44,11 @@ while true
     elif var.bed_aligned == true && var.z_homed == false:
       if (var.upTime - global.bed_aligned_since) > 30
         set global.bed_aligned = false
+
+  if exists(global.resume_deferred) && global.resume_deferred > 0 && global.resume_deferred < var.upTime
+    if state.status == "paused"
+      M24 ; resume print
+      set global.resume_deferred = 0
 
   G4 P100 ; wait 100ms
   if iterations > 598 ; around 60 seconds break and restart the loop 

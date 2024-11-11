@@ -11,6 +11,7 @@ if !exists(global.event_driver_stall)
   global event_driver_stall = true
 
 if state.status == "paused" || state.status == "pausing" || state.status == "resuming"
+  set global.resume_deferred = 0 ; reset resume_deferred
   M99 ; ignore this event - it is already handled
 
 ; check if a printjob is running 

@@ -35,6 +35,7 @@ if param.P == 4
             G11 ; unretract
             M25 ; pause print
         else
+            M220 S{20*global.mfmbackoff} ; reduce speed in steps 3*20=60% 2*20=40% 1*20=20%
             set global.mfmbackoff = global.mfmbackoff - 1
             echo "Filament Sensor Backoffcounter: " ^ global.mfmbackoff ^ ""
         
