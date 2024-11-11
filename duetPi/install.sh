@@ -86,3 +86,6 @@ mv BigPrint-duet-3.5.3-sbc/duet-config/sys/* /opt/dsf/sd/sys/
 sudo chown -R dsf:dsf /opt/dsf/sd/
 
 rm -rf BigPrint-duet-3.5.3-sbc.zip BigPrint-duet-3.5.3-sbc
+
+sudo nmcli connection modify Hotspot connection.autoconnect yes
+nmcli connection modify Hotspot ipv4.method shared

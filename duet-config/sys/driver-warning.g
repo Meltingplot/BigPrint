@@ -1,9 +1,13 @@
+; driver-warning.g
 ; driver warning - 51.0 : 1024 ,Driver 51.0 warning: position tolerance exceeded
 
 if param.B > 0 && param.D == 0 && param.P == 1024 && move.axes[0].homed == false && move.axes[1].homed == false
   M99 ; ignore warning when drives are not homed
 
 echo "driver warning - "^{param.B}^"."^{param.D}^" : "^{param.P}^" ,"^{param.S}
+
+if state.status == "paused" || state.status == "pausing" || state.status == "resuming"
+  M99 ; ignore this event - it is already handled
 
 if !exists(global.event_driver_stall)
   global event_driver_stall = true

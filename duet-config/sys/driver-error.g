@@ -1,4 +1,4 @@
-; driver-stall.g
+; driver-error.g
 ; called to home x and y after stall detection
 ; driver error - 51.0 : 3072 ,Driver 51.0 error: failed to maintain position
 
@@ -9,6 +9,9 @@ echo "driver error - "^{param.B}^"."^{param.D}^" : "^{param.P}^" ,"^{param.S}
 
 if !exists(global.event_driver_stall)
   global event_driver_stall = true
+
+if state.status == "paused" || state.status == "pausing" || state.status == "resuming"
+  M99 ; ignore this event - it is already handled
 
 ; check if a printjob is running 
 ; if it is a can connected driver in closed loop mode with failed to maintain position (param.B > 0 && param.D == 0 && param.P == 3072)
