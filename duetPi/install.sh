@@ -103,6 +103,13 @@ sudo systemctl restart sshd
 
 wget https://github.com/Meltingplot/BigPrint/archive/refs/heads/duet-3.5.3-sbc.zip
 unzip -q -u duet-3.5.3-sbc.zip
+
+# use old dsf-config.g
+cp -f /opt/dsf/sd/sys/dsf-config.g BigPrint-duet-3.5.3-sbc/duet-config/sys/dsf-config.g
+
+# use old machine-override
+cp -f /opt/dsf/sd/sys/machine-override BigPrint-duet-3.5.3-sbc/duet-config/sys/meltingplot/machine-override
+
 sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/filaments/ /opt/dsf/sd/filaments/
 sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/macros/ /opt/dsf/sd/macros/
 sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/sys/ /opt/dsf/sd/sys/
