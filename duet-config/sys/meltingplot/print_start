@@ -12,6 +12,9 @@ G90                                         ; use absolute coordinates
 
 M116                                        ; wait for all heaters
 
+if job.file.height > 0
+  M98 P"0:/sys/meltingplot/set_clearance_height" S{job.file.height + 10} ; set clearance height
+
 if exists(global.clearanceHeight) && move.axes[2].homed
   G90                                     ; absolute positioning
   G1 Z{max(20,global.clearanceHeight)}    ; lift z to clearance height 

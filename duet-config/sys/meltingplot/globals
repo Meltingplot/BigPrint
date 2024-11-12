@@ -5,4 +5,6 @@ global event_driver_stall = false
 
 global resume_deferred = 0
 
-global clearanceHeight = 5
+global clearanceHeight = move.axes[2].max
+
+global ignoreMFMevents = false
