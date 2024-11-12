@@ -121,3 +121,16 @@ rm -rf duet-3.5.3-sbc.zip BigPrint-duet-3.5.3-sbc
 
 sudo nmcli connection modify Hotspot connection.autoconnect yes
 sudo nmcli connection modify Hotspot ipv4.method shared
+
+read -p "Do you want to enable the E-Stop? (yes/[no]): " enable_estop
+
+if [[ "$enable_estop" == "yes" ]]; then
+    sudo sed -i 's|M117 "Enable E-Stop Check in Production! Go to /sys/meltingplot/ce-declaration and enable M582"|;M117 "Enable E-Stop Check in Production! Go to /sys/meltingplot/ce-declaration and enable M582"|' /opt/dsf/sd/sys/meltingplot/ce-declaration
+    sudo sed -i 's|;M582 T2|M582 T2|' /opt/dsf/sd/sys/meltingplot/ce-declaration
+
+    sudo sed -i 's|M117 "Enable E-Stop Check in Production! Go to /sys/daemon and enable M112"|;M117 "Enable E-Stop Check in Production! Go to /sys/daemon and enable M112"|' /opt/dsf/sd/sys/daemon.g
+    sudo sed -i 's|; M112 ; emergency shutdown|M112 ; emergency shutdown|' /opt/dsf/sd/sys/daemon.g
+    echo "E-Stop has been enabled."
+else
+    echo "E-Stop has not been enabled."
+fi
