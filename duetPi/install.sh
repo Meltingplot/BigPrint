@@ -86,9 +86,9 @@ sudo systemctl restart sshd
 
 wget https://github.com/Meltingplot/BigPrint/archive/refs/heads/duet-3.5.3-sbc.zip
 unzip duet-3.5.3-sbc.zip
-mv BigPrint-duet-3.5.3-sbc/duet-config/filaments/* /opt/dsf/sd/filaments/
-mv BigPrint-duet-3.5.3-sbc/duet-config/macros/* /opt/dsf/sd/macros/
-mv BigPrint-duet-3.5.3-sbc/duet-config/sys/* /opt/dsf/sd/sys/
+mv -f BigPrint-duet-3.5.3-sbc/duet-config/filaments/* /opt/dsf/sd/filaments/
+mv -f BigPrint-duet-3.5.3-sbc/duet-config/macros/* /opt/dsf/sd/macros/
+mv -f BigPrint-duet-3.5.3-sbc/duet-config/sys/* /opt/dsf/sd/sys/
 
 # Change ownership to the dsf user
 sudo chown -R dsf:dsf /opt/dsf/sd/
