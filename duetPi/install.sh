@@ -108,7 +108,7 @@ unzip -q -u duet-3.5.3-sbc.zip
 cp -f /opt/dsf/sd/sys/dsf-config.g BigPrint-duet-3.5.3-sbc/duet-config/sys/dsf-config.g
 
 # use old machine-override
-cp -f /opt/dsf/sd/sys/machine-override BigPrint-duet-3.5.3-sbc/duet-config/sys/meltingplot/machine-override
+cp -f /opt/dsf/sd/sys/meltingplot/machine-override BigPrint-duet-3.5.3-sbc/duet-config/sys/meltingplot/machine-override
 
 sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/filaments/ /opt/dsf/sd/filaments/
 sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/macros/ /opt/dsf/sd/macros/
