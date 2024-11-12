@@ -21,7 +21,7 @@ fi
 # Install the required packages
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y nginx git wget unzip
+sudo apt install -y nginx git wget unzip rsync
 
 sudo bash -c 'cat > /etc/nginx/sites-available/reverse-proxy' <<"EOF"
 map $http_upgrade $proxy_connection {
@@ -103,9 +103,9 @@ sudo systemctl restart sshd
 
 wget https://github.com/Meltingplot/BigPrint/archive/refs/heads/duet-3.5.3-sbc.zip
 unzip -q -u duet-3.5.3-sbc.zip
-sudo mv -f BigPrint-duet-3.5.3-sbc/duet-config/filaments/* /opt/dsf/sd/filaments/
-sudo mv -f BigPrint-duet-3.5.3-sbc/duet-config/macros/* /opt/dsf/sd/macros/
-sudo mv -f BigPrint-duet-3.5.3-sbc/duet-config/sys/* /opt/dsf/sd/sys/
+sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/filaments/ /opt/dsf/sd/filaments/
+sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/macros/ /opt/dsf/sd/macros/
+sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/sys/ /opt/dsf/sd/sys/
 
 # Change ownership to the dsf user
 sudo chown -R dsf:dsf /opt/dsf/sd/
