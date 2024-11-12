@@ -102,7 +102,7 @@ sudo sed -i 's|KbdInteractiveAuthentication no|KbdInteractiveAuthentication yes|
 sudo systemctl restart sshd
 
 wget https://github.com/Meltingplot/BigPrint/archive/refs/heads/duet-3.5.3-sbc.zip
-unzip duet-3.5.3-sbc.zip
+unzip -q -u duet-3.5.3-sbc.zip
 sudo mv -f BigPrint-duet-3.5.3-sbc/duet-config/filaments/* /opt/dsf/sd/filaments/
 sudo mv -f BigPrint-duet-3.5.3-sbc/duet-config/macros/* /opt/dsf/sd/macros/
 sudo mv -f BigPrint-duet-3.5.3-sbc/duet-config/sys/* /opt/dsf/sd/sys/
