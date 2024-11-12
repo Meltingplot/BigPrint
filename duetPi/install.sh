@@ -1,6 +1,23 @@
 #!/bin/bash
 set -e
 
+# Check if Python version is 3.9 or greater
+PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
+REQUIRED_VERSION="3.9"
+
+if [[ "$(printf '%s\n' "$REQUIRED_VERSION" "$PYTHON_VERSION" | sort -V | head -n1)" = "$REQUIRED_VERSION" ]]; then 
+    echo "Python version is $PYTHON_VERSION, which is 3.9 or greater."
+else
+    echo "Python version is $PYTHON_VERSION, which is less than 3.9. Please upgrade Python."
+    exit 1
+fi
+
+# Check if the system is running Debian Bookworm or newer
+if ! grep -q 'bookworm\|trixie\|sid' /etc/os-release; then
+    echo "This script requires Debian Bookworm or newer."
+    exit 1
+fi
+
 # Install the required packages
 sudo apt update
 sudo apt upgrade -y
