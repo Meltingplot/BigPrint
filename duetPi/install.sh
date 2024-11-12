@@ -70,14 +70,14 @@ server {
 } 
 EOF
 
+# replace "Url": "http://*" in http.json with "Url": "http://*:8080"
+sudo sed -i 's|"Url": "http://\*"|"Url": "http://*:8080"|' /opt/dsf/conf/http.json
+sudo systemctl restart duetwebserver
+
 sudo rm /etc/nginx/sites-enabled/reverse-proxy || true
 sudo rm /etc/nginx/sites-enabled/default || true
 sudo ln -s /etc/nginx/sites-available/reverse-proxy /etc/nginx/sites-enabled/reverse-proxy
 sudo systemctl restart nginx
-
-# replace "Url": "http://*" in http.json with "Url": "http://*:8080"
-sudo sed -i 's|"Url": "http://\*"|"Url": "http://*:8080"|' /opt/dsf/conf/http.json
-sudo systemctl restart duetwebserver
 
 # allow password authentication
 # replace KbdInteractiveAuthentication no with KbdInteractiveAuthentication yes in sshd_config
