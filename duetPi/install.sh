@@ -79,6 +79,11 @@ sudo systemctl restart nginx
 sudo sed -i 's|"Url": "http://\*"|"Url": "http://*:8080"|' /opt/dsf/conf/http.json
 sudo systemctl restart duetwebserver
 
+# allow password authentication
+# replace KbdInteractiveAuthentication no with KbdInteractiveAuthentication yes in sshd_config
+sudo sed -i 's|KbdInteractiveAuthentication no|KbdInteractiveAuthentication yes|' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+
 wget https://github.com/Meltingplot/BigPrint/archive/refs/heads/duet-3.5.3-sbc.zip
 unzip duet-3.5.3-sbc.zip
 mv BigPrint-duet-3.5.3-sbc/duet-config/filaments/* /opt/dsf/sd/filaments/
