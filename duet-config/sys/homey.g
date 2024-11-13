@@ -9,8 +9,10 @@ if move.axes[2].homed
     G91                                                               ; relative positioning
     G1 H2 Z0.5 F600                                                   ; lift Z relative to current position
 
-M569 P50.0 D5                                                       ; switch to assissted open loop mode to ensure the drive will not move
-M569 P51.0 D5                                                       ; switch to assissted open loop mode to ensure the drive will not move
+if move.axes[0].drivers[0] == "50.0"
+  M569 P50.0 D5                                                       ; switch to assissted open loop mode to ensure the drive will not move
+if move.axes[1].drivers[0] == "51.0"
+  M569 P51.0 D5                                                       ; switch to assissted open loop mode to ensure the drive will not move
 
 G91                                                                   ; relative positioning
 G1 H1 Y{move.axes[1].max+10} F1800                                    ; move quickly to Y axis endstop and stop there (first pass)
@@ -23,5 +25,7 @@ if !exists(global.clearanceHeight) && move.axes[2].homed
 
 G90                                                                   ; absolute positioning
 
-M569 P50.0 D4                                                       ; switch back to closed loop mode
-M569 P51.0 D4                                                       ; switch back to closed loop mode
+if move.axes[0].drivers[0] == "50.0"
+  M569 P50.0 D4                                                       ; switch back to closed loop mode
+if move.axes[1].drivers[0] == "51.0"
+  M569 P51.0 D4                                                       ; switch back to closed loop mode
