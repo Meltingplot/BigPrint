@@ -60,6 +60,8 @@ G1 X15 E15 F30
 if sensors.filamentMonitors[0].calibrated == null
   echo "Cannot calibrate filament monitor within 15mm - error!"
   set global.ignoreMFMevents = false
+  M591 D0 P0                                              ; reset filament sensor
+  M98 P"0:/sys/meltingplot/machine-override"              ; Load Machine specific overrides
   M99
 
 G4 S1 ; wait for filament monitor send timeout
@@ -96,6 +98,14 @@ set var.currentMeasured = (sensors.filamentMonitors[0].calibrated.totalDistance 
 echo "Current E-Steps: " ^ {move.extruders[0].stepsPerMm}
 set var.newESteps = (var.newESteps + {floor(move.extruders[0].stepsPerMm / ((var.currentMeasured-var.totalDistanceBase)/var.extrusionDistance)*100)/100})
 set var.newESteps = floor(var.newESteps / 3.0 * 100)/100
+
+if var.newESteps < 600 && var.newESteps > 1000
+  echo "Calculated E-Steps out of range - " ^ var.newESteps
+  set global.ignoreMFMevents = false
+  M591 D0 P0                                              ; reset filament sensor
+  M98 P"0:/sys/meltingplot/machine-override"              ; Load Machine specific overrides
+  M99
+
 echo "New E-Steps: " ^ var.newESteps
 
 echo >{"0:/filaments/" ^ {move.extruders[0].filament} ^ "/config-auto-esteps.g"} "; calibration temperature: " ^ var.currentTemp
@@ -175,8 +185,10 @@ while true
     if var.check == false && var.first == false
       set var.comp_f = var.comp_f * (1 + var.y[var.i])
     
-    var currentCommanded = 100
-    G1 X{mod(var.i,2)=0?100:-100} E{var.currentCommanded} F{var.comp_f}
+    var currentCommanded = 50
+    if var.comp_f < 100
+      set var.currentCommanded = 25
+    G1 X{mod(var.i,2)=0?var.currentCommanded:(var.currentCommanded*-1)} E{var.currentCommanded} F{var.comp_f}
     
     G4 S1 ; wait for filament monitor send timeout
     

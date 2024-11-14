@@ -31,6 +31,7 @@ if param.P == 4
 
         if global.mfmbackoff == 0
             set global.mfmbackoff = 3
+            M220 S100 ; revert speed change to 100%
             M291 P{"Filament Sensor " ^ param.D ^ ": Too little Filament movement - Possible Reasons: Filament empty, grinding or clogged nozzle."} S1 T0
             G11 ; unretract
             M25 ; pause print

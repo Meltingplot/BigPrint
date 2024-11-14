@@ -3,6 +3,11 @@
 ;
 M98 P"0:/sys/meltingplot/check_doors_closed"
 
+if global.bed_aligned == true
+  ; when homeall or home z is called, the homing of the zaxis is lost
+  ; if the bed was aligned, we can skip the alignment of the z axis
+  set global.bed_aligned_since = state.upTime
+
 if move.axes[2].homed
   if exists(global.clearanceHeight)
     G90                                                             ; absolute positioning
