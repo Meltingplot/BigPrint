@@ -52,7 +52,7 @@ M593 P"zvddd" F40                                       ; cancle ringing at 40Hz
 M203 X18000.00 Y18000.00 Z1200.00 E3600.00              ; set maximum speeds (mm/min)
 M201 X4000.00 Y4000.00 Z72.00 E3000.00                  ; set accelerations (mm/s^2)
 M204 P1500 T4000                                        ; Set printing and travel accelerations
-M906 X1900 Y1900 Z2000 E1400 I30                        ; set motor currents (mA) and motor idle factor in per cent
+M906 X2200 Y2200 Z2000 E1400 I30                        ; set motor currents (mA) and motor idle factor in per cent
 M84 S30                                                 ; Set idle timeout
 M917 X10 Y10                                            ; set idle current to 10% for X and Y
 M917 E50                                                ; set idle current to 50% for E
@@ -67,7 +67,7 @@ M574 Y2 S1 P"io6.in"                                    ; configure active-high 
 M574 Z2 S4                                              ; configure sensorless endstop on high end of Z
 
 ; Led
-M950 P0 C"out3"                                         ; Configure P0 as output for LED Strip
+M950 P0 C"out3" Q2000                                   ; Configure P0 as output for LED Strip
 M42 P0 S0.25                                            ; Set LEDs to 25%
 
 ; ATX PS_ON
