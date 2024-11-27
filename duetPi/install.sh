@@ -122,7 +122,18 @@ rm -rf duet-3.5.3-sbc.zip BigPrint-duet-3.5.3-sbc
 sudo nmcli connection modify Hotspot connection.autoconnect yes
 sudo nmcli connection modify Hotspot ipv4.method shared
 
-read -p "Do you want to enable the E-Stop? (yes/[no]): " enable_estop
+# https://www.raspberrypi.com/documentation/computers/configuration.html#uarts-and-device-tree
+echo "dtoverlay=disable-bt" | sudo tee -a /boot/firmware/config.txt
+sudo systemctl disable bluetooth
+sudo systemctl disable hciuart
+
+enable_estop="no"
+if [ -t 0 ]; then
+    read -p "Do you want to enable the E-Stop? (yes/[no]): " enable_estop
+else
+    echo "Do you want to enable the E-Stop? (yes/[no]): "
+    read enable_estop
+fi
 
 if [[ "$enable_estop" == "yes" ]]; then
     sudo sed -i 's|M117 "Enable E-Stop Check in Production! Go to /sys/meltingplot/ce-declaration and enable M582"|;M117 "Enable E-Stop Check in Production! Go to /sys/meltingplot/ce-declaration and enable M582"|' /opt/dsf/sd/sys/meltingplot/ce-declaration
