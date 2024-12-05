@@ -1,7 +1,8 @@
 ; driver-stall.g
 ; called to home x and y after stall detection
 ;
-echo "driver stalled"
+echo "driver stall - "^{param.B}^"."^{param.D}^" : "^{param.P}^" ,"^{param.S}
+
 if !exists(global.event_driver_stall)
   global event_driver_stall = true
 

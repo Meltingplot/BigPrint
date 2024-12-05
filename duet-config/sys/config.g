@@ -19,7 +19,7 @@ M569 P3 S0                                              ; physical drive 3 goes 
 M569 P4 S0                                              ; physical drive 4 goes backwards (front right)
 M569 P5 S1                                              ; physical drive 5 goes forwards (extruder)
 
-G4 S1                                                   ; wait for expansion boards
+G4 S3                                                   ; wait for expansion boards
 
 ;          Y 51.0 +------------------------------------+
 ;                /                                    /|

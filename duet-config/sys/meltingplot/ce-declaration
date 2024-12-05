@@ -1,7 +1,7 @@
 ; THIS FILE CONTAINS CE RELEVANT CONFIGURATIONS, ANY CHANGES TO THIS FILE MAY RESULT IN A LOST OF THE CE DECLARATION
 
 M203 Z1200.00                                           ; set maximum speeds (mm/min)
-M204 P800 T1250                                         ; Set printing and travel accelerations
+M204 P1500 T4000                                        ; Set printing and travel accelerations
 M906 Z2000                                              ; set motor currents (mA) and motor idle factor in per cent
 M84 S30                                                 ; Set idle timeout
 
