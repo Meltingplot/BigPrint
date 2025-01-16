@@ -1,5 +1,7 @@
 ; THIS FILE CONTAINS CE RELEVANT CONFIGURATIONS, ANY CHANGES TO THIS FILE MAY RESULT IN A LOST OF THE CE DECLARATION
 
+M118 P1  S"trigger4.g executed" L2 ; log the execution on usb port and write it to the log file
+
 ; Left or right Door opened
 
 ;state.status == "idle"

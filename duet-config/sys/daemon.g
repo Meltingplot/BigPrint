@@ -10,6 +10,9 @@ while true
   ; - check if the switch is configured as active high M581 T2 P0 S1 R0
   ; - test the current state of the switch M582 Tx
 
+  if ( state.status == "halted" )
+    break ; exit the loop in case the printer is halted
+
   if ( sensors.gpIn[0].value != 0 || sensors.gpIn[1].value != 0 )
     M117 "Enable E-Stop Check in Production! Go to /sys/daemon and enable M112"
     ; M112 ; emergency shutdown
