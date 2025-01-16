@@ -33,11 +33,11 @@ G4 S3                                                   ; wait for expansion boa
 ;             +------------------------------------+
 
 ; Configure the Duet 3 Expansion 1HCL board at CAN address 50 with a Duet 3 magnetic encoder, warn if 2 fullstep threshold exceeded, error if 4 full steps threshold exceeded.
-M569.1 P50.0 T3 E2.0:4.0 S200 R210 I1500 D0.04 V600 A300000 H0.3
+M569.1 P50.0 T3 E2.0:4.0 S200 R210 I1500 D0.04 V600 A230000 H0.3
 M569 P50.0 D4 S0 ; Configure the motor on the Duet 3 Expansion 1HCL controller at can address 50 as being in closed-loop drive mode (D4) and reversed (S0)
 
 ; Configure the Duet 3 Expansion 1HCL board at CAN address 51 with a Duet 3 magnetic encoder, warn if 2 fullstep threshold exceeded, error if 4 full steps threshold exceeded.
-M569.1 P51.0 T3 E2.0:4.0 S200 R210 I1500 D0.04 V600 A250000 H0.3
+M569.1 P51.0 T3 E2.0:4.0 S200 R210 I1500 D0.04 V600 A230000 H0.3
 M569 P51.0 D4 S1 ; Configure the motor on the Duet 3 Expansion 1HCL controller at can address 51 as being in closed-loop drive mode (D4) reversed (S1)
 
 M584 X50.0 Y51.0 Z2:3:4 E5                              ; set drive mapping
