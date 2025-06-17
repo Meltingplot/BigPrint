@@ -54,6 +54,8 @@ server {
   location = /snapshot {
       proxy_pass http://10.42.0.3/picture/1/current/;
       proxy_buffering off;
+      proxy_no_cache 1;
+      proxy_cache_bypass 1;
 
       # Headers for client browser NOCACHE + CORS origin filter
       add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
@@ -69,11 +71,13 @@ server {
       proxy_set_header   Upgrade $http_upgrade;
       proxy_set_header   Connection $proxy_connection;
       proxy_set_header   Host $host;
-      proxy_cache_bypass $http_upgrade;
       proxy_set_header   X-Real-IP $remote_addr;
       proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header   X-Forwarded-Proto $scheme;
       proxy_set_header   X-Session-Key $http_x_session_key;
+
+      proxy_no_cache     1;
+      proxy_cache_bypass 1;
 
       # WebSocket support
       proxy_set_header Sec-WebSocket-Protocol $http_sec_websocket_protocol;
