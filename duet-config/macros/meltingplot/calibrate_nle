@@ -1,5 +1,6 @@
 var tool = exists(param.T) ? param.T : 0            ; tool number
 var calDistance = exists(param.D) ? param.D : 30    ; distance to move in mm for calibration per iteration - should be at least one circumference of the MFM gear and double the distance of the melt zone
+var tolerance = exists(param.S) ? param.S : 0.05    ; tolerance in %
 var requestedTemp = 275 ; requested temperature in °C
 var requestedVolumetricFlowRate = 30 ; requested volumetric flow rate in mm^3/s
 var filamentDiameter = 2.85 ; filament diameter in mm
@@ -61,7 +62,11 @@ while iterations < #var.sampleValues / 2
     T-1                                               ; deselect tool
     T{var.previousTool}                               ; select previous tool
     M99                                               ; exit macro
-  G1 E{var.calDistance} F{var.extrusionSpeeds[iterations * 2] * 60}              ; extrude the specified distance
+  G90                                                ; use absolute coordinates
+  G1 X{move.axes[0].max/2} Y{move.axes[1].max/2} F2000 ; move to center of bed
+  M400                                               ; wait for moves to finish
+  G91                                               ; use relative coordinates
+  G1 X{var.calDistance} E{var.calDistance} F{var.extrusionSpeeds[iterations * 2] * 60}              ; extrude the specified distance
   M400                                                ; wait for moves to finish
   var correction = 100 / sensors.filamentMonitors[var.extruder].avgPercentage
   if var.correction < 1
@@ -71,8 +76,22 @@ while iterations < #var.sampleValues / 2
     set var.sampleCount = iterations * 2 ; set sample count to current iteration to stop further iterations
     break
   elif var.correction >= 1.3
+    echo "Error to high - try to recover NLE calibration - possible grinding or other issues"
+    ; try to recover
+    M591 D{var.extruder} S0                             ; disable filament monitoring
+    M400                                                ; wait for moves to finish
+    M591 D{var.extruder} A1 S2 E1                       ; enable filament monitoring on all moves
+    M400                                                ; wait for moves to finish
+    G1 E{var.calDistance} F{var.extrusionSpeeds[(iterations-1) * 2] * 60}              ; extrude the specified distance
+    M400                                                ; wait for moves to finish
+    set var.correction = 100 / sensors.filamentMonitors[var.extruder].avgPercentage
+    if var.correction > 1.11 && var.correction < 1.3
+      set var.sampleCount = iterations * 2 ; set sample count to current iteration to stop further iterations
+      echo "problem solved - continue NLE calibration with sampleCount: " ^ {var.sampleCount/2}
+      break
     echo "Error to high - stop NLE calibration - possible grinding or other issues"
     M99
+  
   echo "Extrusion speed: " ^ {var.extrusionSpeeds[iterations*2]} ^ " mm/s, Correction factor: " ^ {var.correction}
   set var.sampleValues[iterations*2] = var.correction ; calculate sample value based on correction factor
   set var.extrusionSpeeds[iterations*2+1] = var.extrusionSpeeds[iterations*2] * var.correction ; adjust extrusion speed based on correction factor
@@ -90,17 +109,38 @@ while iterations < #var.sampleValues / 2
     T-1                                               ; deselect tool
     T{var.previousTool}                               ; select previous tool
     M99                                               ; exit macro
-  G1 E{var.calDistance} F{var.extrusionSpeeds[iterations*2+1] * 60}              ; extrude the specified distance
+  G90                                                ; use absolute coordinates
+  G1 X{move.axes[0].max/2} Y{move.axes[1].max/2} F2000 ; move to center of bed
+  M400                                               ; wait for moves to finish
+  G91                                               ; use relative coordinates
+  G1 X{var.calDistance} E{var.calDistance} F{var.extrusionSpeeds[iterations*2+1] * 60}              ; extrude the specified distance
   M400                                                ; wait for moves to finish
   var correction = 100 / sensors.filamentMonitors[var.extruder].avgPercentage
   if var.correction < 1
     set var.correction = 1 ; ensure correction factor is at least 1
   elif var.correction > 1.25 && var.correction < 1.3 ; check if correction factor is within a reasonable range
     echo "Correction to high " ^ {var.correction} ^ " - stop at iteration " ^ {iterations} ^ " with correction factor: " ^ {var.sampleValues[iterations*2]}
-    set var.sampleCount = iterations*2+1 ; set sample count to current iteration to stop further iterations
+    set var.sampleCount = iterations * 2 ; set sample count to current iteration to stop further iterations
     break
-  elif var.correction >= 1.3
+  elif var.correction >= 1.3 && iterations > 0
+    echo "Error to high - try to recover NLE calibration - possible grinding or other issues"
+    ; try to recover
+    M591 D{var.extruder} S0                             ; disable filament monitoring
+    M400                                                ; wait for moves to finish
+    M591 D{var.extruder} A1 S2 E1                       ; enable filament monitoring on all moves
+    M400                                                ; wait for moves to finish
+    G1 E{var.calDistance} F{var.extrusionSpeeds[(iterations-1) * 2] * 60}              ; extrude the specified distance
+    M400                                                ; wait for moves to finish
+    set var.correction = 100 / sensors.filamentMonitors[var.extruder].avgPercentage
+    if var.correction > 1.11 && var.correction < 1.3
+      set var.sampleCount = iterations * 2 ; set sample count to current iteration to stop further iterations
+      echo "problem solved - continue NLE calibration with sampleCount: " ^ {var.sampleCount/2}
+      break
     echo "Error to high - stop NLE calibration - possible grinding or other issues"
+    M99
+  elif var.correction >= 1.3 && iterations == 0
+    echo "Extrusion speed: " ^ {var.extrusionSpeeds[iterations*2+1]} ^ " mm/s, Correction factor: " ^ {var.correction}
+    echo "NLE calibration failed! - check the filament and extruder"
     M99
   echo "Extrusion speed: " ^ {var.extrusionSpeeds[iterations*2+1]} ^ " mm/s, Correction factor: " ^ {var.correction}
   set var.sampleValues[iterations*2+1] = var.correction ; calculate sample value based on correction factor
@@ -108,40 +148,92 @@ while iterations < #var.sampleValues / 2
 while iterations < var.sampleCount
   echo "Sample " ^ {iterations} ^ ": Extrusion speed: " ^ {var.extrusionSpeeds[iterations]} ^ " mm/s, Correction factor: " ^ {var.sampleValues[iterations]}
 
+var nle_a = 0.0
+var nle_b = 0.0
 
-;// Annahme: Arrays v[1..N], y[1..N], x[1..N]
-;N = Anzahl Messpunkte
-;
-;// Initialisierung
-var S_v = 0
-var S_v2 = 0
-var S_v3 = 0
-var S_t = 0
-var S_tv = 0
+while true
+  ;// Annahme: Arrays v[1..N], y[1..N], x[1..N]
+  ;N = Anzahl Messpunkte
+  ;
+  ;// Initialisierung
+  var failed = false
+  var S_v = 0
+  var S_v2 = 0
+  var S_v3 = 0
+  var S_t = 0
+  var S_tv = 0
+  set var.nle_a = 0.0
+  set var.nle_b = 0.0
 
-;for i = 1 to N
-;    t = y[i] / x[i] - 1
-;    S_v  = S_v  + v[i]
-;    S_v2 = S_v2 + v[i] * v[i]
-;    S_v3 = S_v3 + v[i] * v[i] * v[i]
-;    S_t  = S_t  + t
-;    S_tv = S_tv + t * v[i]
-;end
+  ;for i = 1 to N
+  ;    t = y[i] / x[i] - 1
+  ;    S_v  = S_v  + v[i]
+  ;    S_v2 = S_v2 + v[i] * v[i]
+  ;    S_v3 = S_v3 + v[i] * v[i] * v[i]
+  ;    S_t  = S_t  + t
+  ;    S_tv = S_tv + t * v[i]
+  ;end
 
-while iterations < var.sampleCount
-  set var.S_v = var.S_v + var.extrusionSpeeds[iterations]
-  set var.S_v2 = var.S_v2 + pow(var.extrusionSpeeds[iterations], 2)
-  set var.S_v3 = var.S_v3 + pow(var.extrusionSpeeds[iterations], 3)
-  set var.S_t = var.S_t + (var.sampleValues[iterations] / 1.0 - 1.0)
-  set var.S_tv = var.S_tv + (var.sampleValues[iterations] / 1.0 - 1.0) * var.extrusionSpeeds[iterations]
+  var x = 0
+  while var.x < var.sampleCount
+    set var.S_v = var.S_v + var.extrusionSpeeds[var.x]
+    set var.S_v2 = var.S_v2 + pow(var.extrusionSpeeds[var.x], 2)
+    set var.S_v3 = var.S_v3 + pow(var.extrusionSpeeds[var.x], 3)
+    set var.S_t = var.S_t + (var.sampleValues[var.x] - 1.0)
+    set var.S_tv = var.S_tv + (var.sampleValues[var.x]  - 1.0) * var.extrusionSpeeds[var.x]
+    set var.x = var.x + 1
 
-;Delta = S_v * S_v3 - S_v2 * S_v2
-;A = (S_t * S_v3 - S_tv * S_v2) / Delta
-;B = (S_tv * S_v - S_t * S_v2) / Delta
+  ;Delta = S_v * S_v3 - S_v2 * S_v2
+  ;A = (S_t * S_v3 - S_tv * S_v2) / Delta
+  ;B = (S_tv * S_v - S_t * S_v2) / Delta
 
-var Delta = var.S_v * var.S_v3 - var.S_v2 * var.S_v2
-var A = (var.S_t * var.S_v3 - var.S_tv * var.S_v2) / var.Delta
-var B = (var.S_tv * var.S_v - var.S_t * var.S_v2) / var.Delta
-echo "S_v: " ^ {var.S_v} ^ ", S_v2: " ^ {var.S_v2} ^ ", S_v3: " ^ {var.S_v3}
-echo "S_t: " ^ {var.S_t} ^ ", S_tv: " ^ {var.S_tv}
-echo "Delta: " ^ {var.Delta} ^ ", A: " ^ {var.A} ^ ", B: " ^ {var.B}
+  var Delta = var.S_v * var.S_v3 - var.S_v2 * var.S_v2
+  set var.nle_a = (var.S_t * var.S_v3 - var.S_tv * var.S_v2) / var.Delta
+  set var.nle_b = (var.S_tv * var.S_v - var.S_t * var.S_v2) / var.Delta
+  echo "S_v: " ^ {var.S_v} ^ ", S_v2: " ^ {var.S_v2} ^ ", S_v3: " ^ {var.S_v3}
+  echo "S_t: " ^ {var.S_t} ^ ", S_tv: " ^ {var.S_tv}
+  echo "Delta: " ^ {var.Delta} ^ ", A: " ^ {var.nle_a} ^ ", B: " ^ {var.nle_b}
+
+  M592 D{var.extruder} A{var.nle_a} B{var.nle_b}                          ; activate non linear extrusion
+
+  set var.x = 0
+  while var.x < #var.sampleValues / 2
+    M591 D{var.extruder} S0                             ; disable filament monitoring
+    M400                                                ; wait for moves to finish
+    M591 D{var.extruder} A1 S2 E1                       ; enable filament monitoring on all moves
+    M400                                                ; wait for moves to finish
+    if sensors.filamentMonitors[var.extruder].lastPercentage != null
+      echo "unable to reset filament monitor. Please check the configuration of the filament monitor."
+      if !var.silent
+        M291 P"Unable to reset filament monitor. Please check the configuration of the filament monitor." S2
+      T-1                                               ; deselect tool
+      T{var.previousTool}                               ; select previous tool
+      M99                                               ; exit macro
+    G90                                                ; use absolute coordinates
+    G1 X{move.axes[0].max/2} Y{move.axes[1].max/2} F2000 ; move to center of bed
+    M400                                               ; wait for moves to finish
+    G91                                               ; use relative coordinates
+    G1 X{var.calDistance} E{var.calDistance} F{var.extrusionSpeeds[var.x * 2] * 60}              ; extrude the specified distance
+    M400                                                ; wait for moves to finish
+    var correction = 100 / sensors.filamentMonitors[var.extruder].avgPercentage
+    echo "Extrusion speed: " ^ {var.extrusionSpeeds[var.x*2]} ^ " mm/s, Correction factor: " ^ {var.correction}
+    if var.correction < 1
+      set var.correction = 1 ; ensure correction factor is at least 1
+    elif var.correction > (1/(1-var.tolerance)) ; check if correction factor is within a reasonable range
+      echo "Correction to high " ^ {var.correction} ^ " - stop at iteration " ^ {var.x-1} ^ " with correction factor: " ^ {var.sampleValues[(var.x-1)*2]}
+      set var.sampleCount = max(var.sampleCount * 2 - 2, 0) ; set sample count to current iteration to stop further iterations
+      if var.sampleCount == 0
+        echo "No more samples to remove - failed NLE calibration"
+        M99
+      set var.failed = true ; set failed flag to true
+      break
+    set var.x = var.x + 1
+
+  if var.failed == false
+    break
+
+echo "NLE calibration finished!"
+echo "M592 D0 A" ^ var.nle_a ^ " B" ^ var.nle_b ^ " L0.2"
+echo >{"0:/filaments/" ^ {move.extruders[0].filament} ^ "/config-auto-nle.g"} "; max F" ^ var.extrusionSpeeds[var.sampleCount -1] * 60 ^ " mm/min or " ^ var.extrusionSpeeds[var.sampleCount -1] * 6.38 ^ "mm³/s"
+echo >>{"0:/filaments/" ^ {move.extruders[0].filament} ^ "/config-auto-nle.g"} "; temp: " ^ var.currentTemp ^ " °C"
+echo >>{"0:/filaments/" ^ {move.extruders[0].filament} ^ "/config-auto-nle.g"} "M592 D0 A" ^ var.nle_a ^ " B" ^ var.nle_b ^ " L0.2"
