@@ -4,10 +4,18 @@ This repository contains configuration files for the Meltingplot MBL Series 3D P
 
 ## Install
 
+### Install on Raspberry PI SBC
 To install these configuration files on a Duet 3D printer controller, follow these steps:
 
 ```bash
-curl -s https://raw.githubusercontent.com/Meltingplot/BigPrint/refs/heads/duet-3.5.3-sbc/duetPi/install.sh | bash
+curl -s https://raw.githubusercontent.com/Meltingplot/BigPrint/refs/heads/duet-3.5.4-sbc/duetPi/install.sh | bash
+```
+
+### Install on Raspberry PI Zero 2W
+To install the camPI, follow these steps:
+
+```bash
+curl -s https://raw.githubusercontent.com/Meltingplot/BigPrint/refs/heads/duet-3.5.4-sbc/camPi/install.sh | bash
 ```
 
 ## Repository Structure
