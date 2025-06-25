@@ -105,23 +105,23 @@ sudo systemctl restart nginx
 sudo sed -i 's|KbdInteractiveAuthentication no|KbdInteractiveAuthentication yes|' /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
-wget https://github.com/Meltingplot/BigPrint/archive/refs/heads/duet-3.5.3-sbc.zip
-unzip -q -u duet-3.5.3-sbc.zip
+wget https://github.com/Meltingplot/BigPrint/archive/refs/heads/duet-3.5.4-sbc.zip
+unzip -q -u duet-3.5.4-sbc.zip
 
 # use old dsf-config.g
-cp -f /opt/dsf/sd/sys/dsf-config.g BigPrint-duet-3.5.3-sbc/duet-config/sys/dsf-config.g || true
+cp -f /opt/dsf/sd/sys/dsf-config.g BigPrint-duet-3.5.4-sbc/duet-config/sys/dsf-config.g || true
 
 # use old machine-override
-cp -f /opt/dsf/sd/sys/meltingplot/machine-override BigPrint-duet-3.5.3-sbc/duet-config/sys/meltingplot/machine-override || true
+cp -f /opt/dsf/sd/sys/meltingplot/machine-override BigPrint-duet-3.5.4-sbc/duet-config/sys/meltingplot/machine-override || true
 
-sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/filaments/ /opt/dsf/sd/filaments/
-sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/macros/ /opt/dsf/sd/macros/
-sudo rsync -a BigPrint-duet-3.5.3-sbc/duet-config/sys/ /opt/dsf/sd/sys/
+sudo rsync -a BigPrint-duet-3.5.4-sbc/duet-config/filaments/ /opt/dsf/sd/filaments/
+sudo rsync -a BigPrint-duet-3.5.4-sbc/duet-config/macros/ /opt/dsf/sd/macros/
+sudo rsync -a BigPrint-duet-3.5.4-sbc/duet-config/sys/ /opt/dsf/sd/sys/
 
 # Change ownership to the dsf user
 sudo chown -R dsf:dsf /opt/dsf/sd/
 
-rm -rf duet-3.5.3-sbc.zip BigPrint-duet-3.5.3-sbc
+rm -rf duet-3.5.4-sbc.zip BigPrint-duet-3.5.4-sbc
 
 sudo nmcli connection modify Hotspot connection.autoconnect yes
 sudo nmcli connection modify Hotspot ipv4.method shared
