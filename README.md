@@ -15,7 +15,7 @@ curl -s https://raw.githubusercontent.com/Meltingplot/BigPrint/refs/heads/duet-3
 To install the camPI, follow these steps:
 
 ```bash
-curl -s https://raw.githubusercontent.com/Meltingplot/BigPrint/refs/heads/duet-3.5.4-sbc/camPi/install.sh | bash
+source <(curl -sSL https://raw.githubusercontent.com/Meltingplot/BigPrint/refs/heads/duet-3.5.4-sbc/camPi/install.sh)
 ```
 
 ## Repository Structure
