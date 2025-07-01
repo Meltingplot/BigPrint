@@ -18,7 +18,9 @@ if (heat.heaters[1].current < (heat.heaters[1].active-5.0)) || (heat.heaters[0].
   M116                                                          ; wait for all heaters
 
 M291 P"Place the calibration card between the nozzle and the printbed" S2
+G91                                                             ; relative position
 M291 P"Jog Z to Zero. Z- will decrease the distance between the nozzle and the printbed" R"Z-Zero" S3 Z1 ; ask operator to jog to z=0
+G90                                                             ; absolute position
 G92 Z0                                                          ; set Z = 0
 G1 Z5 F300                                                      ; move Z 5mm away
 M291 P"Remove the calibration card from the printbed" S2
