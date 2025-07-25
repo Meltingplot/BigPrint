@@ -233,7 +233,15 @@ while true
     break
 
 echo "NLE calibration finished!"
-echo "M592 D0 A" ^ var.nle_a ^ " B" ^ var.nle_b ^ " L0.2"
+echo "M591 D0 A" ^ var.nle_a ^ " B" ^ var.nle_b ^ " L0.2"
 echo >{"0:/filaments/" ^ {move.extruders[0].filament} ^ "/config-auto-nle.g"} "; max F" ^ var.extrusionSpeeds[var.sampleCount -1] * 60 ^ " mm/min or " ^ var.extrusionSpeeds[var.sampleCount -1] * 6.38 ^ "mm³/s"
 echo >>{"0:/filaments/" ^ {move.extruders[0].filament} ^ "/config-auto-nle.g"} "; temp: " ^ var.currentTemp ^ " °C"
 echo >>{"0:/filaments/" ^ {move.extruders[0].filament} ^ "/config-auto-nle.g"} "M592 D0 A" ^ var.nle_a ^ " B" ^ var.nle_b ^ " L0.2"
+
+M591 D{var.extruder} A1 S1 E{var.previousSampleDistance}  ; reset filament sensor
+M98 P"0:/sys/meltingplot/machine-override"                ; Load Machine specific overrides
+
+T-1                                               ; deselect tool
+T{var.previousTool}                               ; select previous tool
+
+set global.ignoreMFMevents = false                ; reactivate filament errors
