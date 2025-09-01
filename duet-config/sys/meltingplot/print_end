@@ -6,6 +6,7 @@ T-1                                                       ; deselect all tools
 
 if exists(global.clearanceHeight) && move.axes[2].homed
   G90                                                     ; absolute positioning
+  ; TODO: handle wrong height from duet/slicer
   G1 Z{max(20,global.clearanceHeight)}                    ; lift z to clearance height 
 
 G28 X Y                                                   ; home x and y
